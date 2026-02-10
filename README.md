@@ -133,16 +133,40 @@ All state is persisted in localStorage for offline functionality.
 
 ## 🔌 Backend Integration
 
-Currently, the frontend uses mock data and localStorage. To integrate with a backend:
+The project now includes a complete ExpressJS backend with MongoDB integration.
 
-1. Update API calls in:
-   - `src/pages/Login.jsx`
-   - `src/pages/Register.jsx`
-   - `src/context/AuthContext.jsx`
+### Backend Setup
 
-2. Replace localStorage with API calls
-3. Add API configuration file
-4. Implement error handling for API responses
+1. The backend is located in the `backend/` directory.
+2. It uses **Mongoose** for database modeling.
+3. It defaults to an **in-memory MongoDB server** for easy development, but can be configured to use a real MongoDB instance via the `MONGODB_URI` environment variable.
+4. It includes auto-seeding for initial services data.
+
+### Running the Project
+
+To run both the frontend and backend:
+
+1. **Install Dependencies:**
+   ```bash
+   npm install
+   cd backend && npm install
+   ```
+
+2. **Configure Environment:**
+   - Create a `.env` file in the root directory (for the frontend).
+   - Create a `.env` file in the `backend/` directory.
+   - You can use the `.env.example` files as templates.
+
+3. **Start the Backend:**
+   ```bash
+   cd backend
+   npm start
+   ```
+
+4. **Start the Frontend:**
+   ```bash
+   npm run dev
+   ```
 
 ## 📝 Development Notes
 
