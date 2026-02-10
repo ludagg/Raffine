@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { register as registerAPI } from '../api'
 
 function Register() {
   const navigate = useNavigate()
@@ -76,18 +77,15 @@ function Register() {
 
     setIsLoading(true)
     
-    // Simulate API call - will be replaced with actual backend call later
-    setTimeout(() => {
-      setIsLoading(false)
-      // For frontend demo: auto-login after registration
-      const userData = {
-        email: formData.email,
-        name: formData.name,
-        id: Date.now()
-      }
+    try {
+      const userData = await registerAPI(formData.name, formData.email, formData.password)
       login(userData)
       navigate('/home')
-    }, 1000)
+    } catch (error) {
+      setErrors({ form: error.message })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -112,6 +110,11 @@ function Register() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              {errors.form && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 text-sm p-3 rounded-lg text-center">
+                  {errors.form}
+                </div>
+              )}
               {/* Name Field */}
               <div>
                 <label htmlFor="name" className="block text-white text-sm font-medium mb-2">

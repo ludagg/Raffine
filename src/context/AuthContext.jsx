@@ -26,6 +26,12 @@ export function AuthProvider({ children }) {
     localStorage.setItem('raffine_user', JSON.stringify(userData))
   }
 
+  const registerUser = (userData) => {
+    setUser(userData)
+    setIsAuthenticated(true)
+    localStorage.setItem('raffine_user', JSON.stringify(userData))
+  }
+
   const logout = () => {
     setUser(null)
     setIsAuthenticated(false)
@@ -33,7 +39,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, registerUser }}>
       {children}
     </AuthContext.Provider>
   )
