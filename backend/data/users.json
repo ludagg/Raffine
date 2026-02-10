@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1770744899250,
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "$2b$10$8lzUW3XbB8Yz93pfnoosgexvZqY9jfkNB08B6j0Bhrzq7wLG6dcuq"
+  },
+  {
+    "id": 1770745068430,
+    "name": "New User",
+    "email": "newuser@example.com",
+    "password": "$2b$10$mVrRhTtm/ejKSlbLK5oQgO3cKtyuLpR/YPhtn5c/nAmcORbZqnACq"
+  },
+  {
+    "id": 1770745123572,
+    "name": "New User",
+    "email": "user_1770745123@example.com",
+    "password": "$2b$10$1D1bzTaVc53vJfU7LIDoQ.Rca/fs4f5GWwFIFscQQQajrVilq8XPC"
+  },
+  {
+    "id": 1770745212904,
+    "name": "New User",
+    "email": "user_1770745212@example.com",
+    "password": "$2b$10$cdo6yIx1i5RTYx5SPgZ8XewOjnoD8jyEAfFRGFeiaki9fUFwkxrzO"
+  },
+  {
+    "id": 1770745243935,
+    "name": "New User",
+    "email": "user_1770745243@example.com",
+    "password": "$2b$10$tH4Sk.ATAltFCQ46Mh7GyuVmsrorSP6tzkwiVhczaSEZw2kgepMsa"
+  },
+  {
+    "id": 1770745374661,
+    "name": "New User",
+    "email": "user_1770745374@example.com",
+    "password": "$2b$10$f4IX2lAQNkNLKvokiJqhT.IvowPnDHMs5fLhIXDsN14G4bFdVkAC6"
+  }
+]

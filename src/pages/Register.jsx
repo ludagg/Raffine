@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 function Register() {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { register } = useAuth()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -76,18 +76,15 @@ function Register() {
 
     setIsLoading(true)
     
-    // Simulate API call - will be replaced with actual backend call later
-    setTimeout(() => {
-      setIsLoading(false)
-      // For frontend demo: auto-login after registration
-      const userData = {
-        email: formData.email,
-        name: formData.name,
-        id: Date.now()
-      }
-      login(userData)
+    // Actual API call via AuthContext
+    const result = await register(formData.name, formData.email, formData.password)
+    setIsLoading(false)
+
+    if (result.success) {
       navigate('/home')
-    }, 1000)
+    } else {
+      setErrors({ server: result.message || 'Registration failed. Please try again.' })
+    }
   }
 
   return (
@@ -112,6 +109,11 @@ function Register() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              {errors.server && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg text-sm text-center">
+                  {errors.server}
+                </div>
+              )}
               {/* Name Field */}
               <div>
                 <label htmlFor="name" className="block text-white text-sm font-medium mb-2">
