@@ -71,18 +71,15 @@ function Login() {
       localStorage.removeItem('raffine_remember_email')
     }
     
-    // Simulate API call - will be replaced with actual backend call later
-    setTimeout(() => {
-      setIsLoading(false)
-      // For frontend demo: login with user data
-      const userData = {
-        email: formData.email,
-        name: formData.email.split('@')[0],
-        id: Date.now()
-      }
-      login(userData)
+    // Actual API call via AuthContext
+    const result = await login(formData.email, formData.password)
+    setIsLoading(false)
+
+    if (result.success) {
       navigate('/home')
-    }, 1000)
+    } else {
+      setErrors({ server: result.message || 'Login failed. Please try again.' })
+    }
   }
 
   return (
@@ -107,6 +104,11 @@ function Login() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {errors.server && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg text-sm text-center">
+                  {errors.server}
+                </div>
+              )}
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
