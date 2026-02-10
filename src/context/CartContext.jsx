@@ -1,10 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useAuth } from './AuthContext'
+import { updateCart as updateCartAPI, getUserProfile } from '../api'
 
 const CartContext = createContext()
 
 export function CartProvider({ children }) {
+  const { user, isAuthenticated } = useAuth()
   const [cartItems, setCartItems] = useState([])
 
+  // Load initial cart
   useEffect(() => {
     const savedCart = localStorage.getItem('raffine_cart')
     if (savedCart) {
@@ -16,9 +20,42 @@ export function CartProvider({ children }) {
     }
   }, [])
 
+  // Sync cart with backend if authenticated
+  useEffect(() => {
+    const syncCart = async () => {
+      if (isAuthenticated) {
+        try {
+          // When logging in, we might want to merge or just fetch
+          const profile = await getUserProfile()
+          // Simplify: just use backend cart if it has items, otherwise use local
+          if (profile.cart && profile.cart.length > 0) {
+            const formattedCart = profile.cart.map(item => ({
+              ...item.service,
+              quantity: item.quantity,
+              id: item.service._id // Map _id to id for frontend compatibility
+            }))
+            setCartItems(formattedCart)
+          }
+        } catch (error) {
+          console.error('Failed to sync cart', error)
+        }
+      }
+    }
+    syncCart()
+  }, [isAuthenticated])
+
   useEffect(() => {
     localStorage.setItem('raffine_cart', JSON.stringify(cartItems))
-  }, [cartItems])
+
+    // Update backend if authenticated
+    if (isAuthenticated) {
+      const backendCart = cartItems.map(item => ({
+        service: item._id || item.id,
+        quantity: item.quantity
+      }))
+      updateCartAPI(backendCart).catch(console.error)
+    }
+  }, [cartItems, isAuthenticated])
 
   const addToCart = (service) => {
     setCartItems(prev => {

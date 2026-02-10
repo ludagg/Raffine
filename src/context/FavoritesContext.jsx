@@ -1,10 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useAuth } from './AuthContext'
+import { updateFavorites as updateFavoritesAPI, getUserProfile } from '../api'
 
 const FavoritesContext = createContext()
 
 export function FavoritesProvider({ children }) {
+  const { isAuthenticated } = useAuth()
   const [favorites, setFavorites] = useState([])
 
+  // Load initial favorites
   useEffect(() => {
     const savedFavorites = localStorage.getItem('raffine_favorites')
     if (savedFavorites) {
@@ -16,9 +20,36 @@ export function FavoritesProvider({ children }) {
     }
   }, [])
 
+  // Sync favorites with backend if authenticated
+  useEffect(() => {
+    const syncFavorites = async () => {
+      if (isAuthenticated) {
+        try {
+          const profile = await getUserProfile()
+          if (profile.favorites && profile.favorites.length > 0) {
+            const formattedFavorites = profile.favorites.map(service => ({
+              ...service,
+              id: service._id
+            }))
+            setFavorites(formattedFavorites)
+          }
+        } catch (error) {
+          console.error('Failed to sync favorites', error)
+        }
+      }
+    }
+    syncFavorites()
+  }, [isAuthenticated])
+
   useEffect(() => {
     localStorage.setItem('raffine_favorites', JSON.stringify(favorites))
-  }, [favorites])
+
+    // Update backend if authenticated
+    if (isAuthenticated) {
+      const backendFavorites = favorites.map(item => item._id || item.id)
+      updateFavoritesAPI(backendFavorites).catch(console.error)
+    }
+  }, [favorites, isAuthenticated])
 
   const toggleFavorite = (service) => {
     setFavorites(prev => {

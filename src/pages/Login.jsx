@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { login as loginAPI } from '../api'
 
 function Login() {
   const navigate = useNavigate()
@@ -71,18 +72,15 @@ function Login() {
       localStorage.removeItem('raffine_remember_email')
     }
     
-    // Simulate API call - will be replaced with actual backend call later
-    setTimeout(() => {
-      setIsLoading(false)
-      // For frontend demo: login with user data
-      const userData = {
-        email: formData.email,
-        name: formData.email.split('@')[0],
-        id: Date.now()
-      }
+    try {
+      const userData = await loginAPI(formData.email, formData.password)
       login(userData)
       navigate('/home')
-    }, 1000)
+    } catch (error) {
+      setErrors({ form: error.message })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -107,6 +105,11 @@ function Login() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {errors.form && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 text-sm p-3 rounded-lg text-center">
+                  {errors.form}
+                </div>
+              )}
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
